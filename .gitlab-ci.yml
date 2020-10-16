@@ -1,0 +1,20 @@
+image: gradle:jdk11
+
+before_script:
+  - export GRADLE_USER_HOME='pwd'/.gradle
+
+cache:
+  paths:
+    - .gradle/wrapper
+    - .gradle/caches
+
+packaging:
+  stage: build
+  script:
+    - ./gradlew assemble
+
+testing:
+  stage: test
+  script:
+    - ./gradlew check
+
