@@ -1,5 +1,6 @@
 package com.ilkin.simpletodo.service.impl;
 
+import com.ilkin.simpletodo.exception.generic.EntityNotFoundException;
 import com.ilkin.simpletodo.models.TodoItem;
 import com.ilkin.simpletodo.repo.TodoItemRepo;
 import com.ilkin.simpletodo.services.TodoItemService;
@@ -11,6 +12,7 @@ import org.mockito.Mock;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.Mockito.*;
@@ -39,6 +41,7 @@ public class TodoItemServiceImplTests {
         passed.setListId(UUID.randomUUID());
         passed.setTaskName("name");
 
+        expected = new TodoItem();
         expected.setListId(passed.getListId());
         expected.setTaskName(passed.getTaskName());
         expected.setItemId(passed.getItemId());
@@ -59,15 +62,93 @@ public class TodoItemServiceImplTests {
         List<TodoItem> allByListId = itemService.getAllByListId(UUID.randomUUID());
 
         assertEquals(todoItemList, allByListId);
+        //TODO didnt pass
 
     }
 
-//    @Test
-//    @DisplayName("getAllByListId(Long.Max)")
-//    public void get_all_list_by_id_when_not_exist(){
-//        when(itemRepo.findAll()).thenReturn(expectedList);
-//
-//        when(itemService.getAllByListId(UUID.fromString("aa")))
-//    }
+    @Test
+    @DisplayName("getAllByListId(Long.Max)")
+    public void get_all_list_by_id_when_not_exist() {
+        when(itemRepo.findAll()).thenReturn(expectedList);
+
+        when(itemService.getAllByListId(UUID.fromString("aa")));
+        //TODO not working, logic must be reviesd
+    }
+
+    @Test
+    @DisplayName("getItemById(id)")
+    public void get_item_by_id_when_exist() throws Exception {
+
+        when(itemRepo.findById(1L)).thenReturn(java.util.Optional.ofNullable(expected));
+
+        TodoItem itemById = itemService.getItemById(1);
+
+        assertEquals(expected, itemById);
+    }
+
+    @Test
+    @DisplayName("getItemById(Long.Max_Value)")
+    public void get_item_by_id_when_not_exist() {
+
+        when(itemRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class,
+                () -> itemService.getItemById(Long.MAX_VALUE));
+    }
+
+    @Test
+    @DisplayName("saveItem(TodoItem todoItem)")
+    public void save_item() {
+
+        when(itemRepo.save(passed)).thenReturn(expected);
+
+        TodoItem todoItem = itemService.saveItem(passed);
+
+        assertEquals(expected, todoItem);
+    }
+
+    @Test
+    @DisplayName("deleteItemById(id)")
+    public void delete_item_by_id_when_exist() throws EntityNotFoundException {
+
+        when(itemRepo.findById(1L)).thenReturn(Optional.of(expected));
+
+        TodoItem todoItem = itemService.deleteById(1L);
+
+        assertEquals(expected, todoItem);
+    }
+
+    @Test
+    @DisplayName("deleteItemById(Long.Max_Value)")
+    public void delete_item_by_id_when_not_exist() throws EntityNotFoundException {
+
+        when(itemRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class,
+                () -> itemService.deleteById(Long.MAX_VALUE));
+    }
+
+    @Test
+    @DisplayName("editItem(TodoItem todoItem)")
+    public void edit_item() {
+
+        when(itemRepo.findById(1L)).thenReturn(Optional.of(expected));
+
+        TodoItem todoItem = itemService.updateItem(passed);
+
+        assertEquals(expected, todoItem);
+        //TODO not passed
+    }
+
+    @Test
+    @DisplayName("checkIsDone")
+    public void change_done_status() {
+
+        when(itemRepo.findById(1L)).thenReturn(Optional.of(expected));
+
+        TodoItem todoItem = itemService.changeDoneStatus(1L);
+
+        assertEquals(expected, todoItem);
+    }
 
 }
