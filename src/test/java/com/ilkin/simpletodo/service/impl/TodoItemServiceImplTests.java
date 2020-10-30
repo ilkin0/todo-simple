@@ -59,8 +59,6 @@ public class TodoItemServiceImplTests {
         List<TodoItem> allByListId = itemService.getAllItems();
 
         assertEquals(todoItemList, allByListId);
-        //TODO didnt pass
-
     }
 
 
@@ -122,11 +120,11 @@ public class TodoItemServiceImplTests {
     public void edit_item() {
 
         when(itemRepo.findById(1L)).thenReturn(Optional.of(expected));
+        when(itemRepo.save(expected)).thenReturn(expected);
 
         TodoItem todoItem = itemService.updateItem(passed);
 
         assertEquals(expected, todoItem);
-        //TODO not passed
     }
 
     @Test
