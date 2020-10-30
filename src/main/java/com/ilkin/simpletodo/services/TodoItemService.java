@@ -8,13 +8,13 @@ import java.util.UUID;
 
 public interface TodoItemService {
 
-    List<TodoItem> getAllByListId(UUID listId);
+    List<TodoItem> getAllItems();
 
     TodoItem getItemById(long id) throws EntityNotFoundException;
 
     TodoItem saveItem(TodoItem todoItem);
 
-    TodoItem deleteById(long id) throws EntityNotFoundException;
+    TodoItem deleteItemById(long id) throws EntityNotFoundException;
 
     TodoItem updateItem(TodoItem editedItem);
 

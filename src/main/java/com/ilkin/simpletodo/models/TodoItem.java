@@ -3,7 +3,6 @@ package com.ilkin.simpletodo.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.Length;
 
@@ -11,7 +10,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Table(name = "TODOITEMS")
@@ -29,10 +27,6 @@ public class TodoItem implements Serializable {
     @Column(name = "itemId")
 //    @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
     private long itemId;
-
-    @Column(name = "listId")
-    @Type(type = "pg-uuid")
-    private UUID listId;
 
     @Column(name = "taskName", length = 50, nullable = false)
     @Length(max = 50, message = "{task.name.length}")

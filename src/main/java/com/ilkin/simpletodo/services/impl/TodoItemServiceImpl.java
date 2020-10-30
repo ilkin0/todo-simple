@@ -6,11 +6,11 @@ import com.ilkin.simpletodo.models.TodoItem;
 import com.ilkin.simpletodo.repo.TodoItemRepo;
 import com.ilkin.simpletodo.services.TodoItemService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.IteratorUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,8 +19,9 @@ public class TodoItemServiceImpl implements TodoItemService {
     private final TodoItemRepo itemRepo;
 
     @Override
-    public List<TodoItem> getAllByListId(UUID listId) {
-        return itemRepo.findByListId(listId);
+    public List<TodoItem> getAllItems() {
+
+        return IteratorUtils.toList(itemRepo.findAll().iterator());
     }
 
     @Override
@@ -37,7 +38,7 @@ public class TodoItemServiceImpl implements TodoItemService {
     }
 
     @Override
-    public TodoItem deleteById(long id) throws EntityNotFoundException {
+    public TodoItem deleteItemById(long id) throws EntityNotFoundException {
 
         TodoItem itemById = this.getItemById(id);
 

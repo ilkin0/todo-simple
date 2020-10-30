@@ -13,7 +13,6 @@ import org.mockito.Mock;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,11 +37,9 @@ public class TodoItemServiceImplTests {
 
         passed = new TodoItem();
         passed.setItemId(1);
-        passed.setListId(UUID.randomUUID());
         passed.setTaskName("name");
 
         expected = new TodoItem();
-        expected.setListId(passed.getListId());
         expected.setTaskName(passed.getTaskName());
         expected.setItemId(passed.getItemId());
 
@@ -51,29 +48,21 @@ public class TodoItemServiceImplTests {
     }
 
     @Test
-    @DisplayName("getAllByListId(listId)")
-    public void get_all_list_by_id_when_exist() {
+    @DisplayName("getAllByListId()")
+    public void get_all_items() {
 
         List<TodoItem> todoItemList = new ArrayList<>();
         todoItemList.add(expected);
 
         when(itemRepo.findAll()).thenReturn(expectedList);
 
-        List<TodoItem> allByListId = itemService.getAllByListId(UUID.randomUUID());
+        List<TodoItem> allByListId = itemService.getAllItems();
 
         assertEquals(todoItemList, allByListId);
         //TODO didnt pass
 
     }
 
-    @Test
-    @DisplayName("getAllByListId(Long.Max)")
-    public void get_all_list_by_id_when_not_exist() {
-        when(itemRepo.findAll()).thenReturn(expectedList);
-
-        when(itemService.getAllByListId(UUID.fromString("aa")));
-        //TODO not working, logic must be reviesd
-    }
 
     @Test
     @DisplayName("getItemById(id)")
@@ -113,7 +102,7 @@ public class TodoItemServiceImplTests {
 
         when(itemRepo.findById(1L)).thenReturn(Optional.of(expected));
 
-        TodoItem todoItem = itemService.deleteById(1L);
+        TodoItem todoItem = itemService.deleteItemById(1L);
 
         assertEquals(expected, todoItem);
     }
@@ -125,7 +114,7 @@ public class TodoItemServiceImplTests {
         when(itemRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class,
-                () -> itemService.deleteById(Long.MAX_VALUE));
+                () -> itemService.deleteItemById(Long.MAX_VALUE));
     }
 
     @Test
