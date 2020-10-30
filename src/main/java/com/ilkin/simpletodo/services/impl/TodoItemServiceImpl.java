@@ -51,14 +51,18 @@ public class TodoItemServiceImpl implements TodoItemService {
     }
 
     @Override
-    public TodoItem updateItem(TodoItem editedItem) {
+    public TodoItem updateItem(long id, TodoItem editedItem) throws EntityNotFoundException {
 
-        TodoItem todoItem = itemRepo.findById(editedItem.getItemId()).orElse(null);
+        Optional<TodoItem> itemOptional = itemRepo.findById(editedItem.getItemId());
+        TodoItem todoItem = itemOptional.orElseThrow(() -> new EntityNotFoundException(TodoItem.class, id));
 
         if (todoItem != null) {
             todoItem.setTaskName(editedItem.getTaskName());
+            todoItem.setDone(editedItem.isDone());
+            todoItem.setItemId(editedItem.getItemId());
             return itemRepo.save(todoItem);
         }
+        //TODO have to change logic. Item must be updated without ID in request body
 
         return itemRepo.save(todoItem);
     }

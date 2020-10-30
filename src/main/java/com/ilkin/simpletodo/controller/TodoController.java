@@ -38,9 +38,10 @@ public class TodoController {
 
     @PutMapping("{itemId}")
     public TodoItem updateItem(
+            @PathVariable long itemId,
             @RequestBody TodoItem todoItem
-    ) {
-        return itemService.updateItem(todoItem);
+    ) throws EntityNotFoundException {
+        return itemService.updateItem(itemId, todoItem);
     }
 
     @DeleteMapping("{itemId}")

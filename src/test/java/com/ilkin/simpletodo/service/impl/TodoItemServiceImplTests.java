@@ -117,12 +117,12 @@ public class TodoItemServiceImplTests {
 
     @Test
     @DisplayName("editItem(TodoItem todoItem)")
-    public void edit_item() {
+    public void edit_item() throws EntityNotFoundException {
 
         when(itemRepo.findById(1L)).thenReturn(Optional.of(expected));
         when(itemRepo.save(expected)).thenReturn(expected);
 
-        TodoItem todoItem = itemService.updateItem(passed);
+        TodoItem todoItem = itemService.updateItem(1, passed);
 
         assertEquals(expected, todoItem);
     }
