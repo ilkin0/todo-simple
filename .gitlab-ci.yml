@@ -1,7 +1,11 @@
 image: gradle:jdk11
 
+stages:
+  - build
+  - tests
+
 before_script:
-  - export GRADLE_USER_HOME='pwd'/cache/.gradle
+  - export GRADLE_USER_HOME='pwd'/.gradle
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
@@ -12,10 +16,11 @@ cache:
 package:
   stage: build
   script:
+    - chmod +x ./gradlew
     - ./gradlew assemble
 
 test:
-  stage: test
+  stage: tests
   script:
     - ./gradlew check
 
