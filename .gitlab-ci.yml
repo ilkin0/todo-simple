@@ -22,5 +22,6 @@ package:
 test:
   stage: tests
   script:
+    - chmod +x ./gradlew
     - ./gradlew check
 
