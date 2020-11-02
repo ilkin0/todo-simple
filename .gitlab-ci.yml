@@ -4,6 +4,7 @@ before_script:
   - export GRADLE_USER_HOME='pwd'/cache/.gradle
 
 cache:
+  key: ${CI_COMMIT_REF_SLUG}
   paths:
     - .gradle/wrapper
     - .gradle/caches
