@@ -68,17 +68,16 @@ public class TodoItemServiceImpl implements TodoItemService {
     }
 
     @Override
-    public TodoItem changeDoneStatus(long id) {
+    public TodoItem changeItemStatus(long id) throws EntityNotFoundException {
 
-        TodoItem todoItem = itemRepo.findById(id).orElse(null);
+        TodoItem todoItem = this.getItemById(id);
 
-        if (todoItem != null) {
+        try {
             todoItem.setDone(!todoItem.isDone());
             itemRepo.save(todoItem);
             return todoItem;
+        } catch (Exception e) {
+            throw new EntityNotFoundException(TodoItem.class, id);
         }
-
-
-        return null;
     }
 }

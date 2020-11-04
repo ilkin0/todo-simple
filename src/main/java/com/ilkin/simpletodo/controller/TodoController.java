@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static com.ilkin.simpletodo.constant.Constant.TODO_ITEM_URL;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequestMapping(TODO_ITEM_URL)
@@ -29,7 +30,7 @@ public class TodoController {
         return itemService.getItemById(id);
     }
 
-    @PostMapping
+    @PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     public TodoItem saveItem(
             @RequestBody TodoItem todoItem
     ) {
@@ -54,7 +55,7 @@ public class TodoController {
     @PostMapping("{itemId}")
     public TodoItem changeItemStatus(
             @PathVariable("itemId") long id
-    ) {
-        return itemService.changeDoneStatus(id);
+    ) throws EntityNotFoundException {
+        return itemService.changeItemStatus(id);
     }
 }

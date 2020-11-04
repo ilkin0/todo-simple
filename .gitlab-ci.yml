@@ -2,7 +2,8 @@ image: gradle:jdk11
 
 stages:
   - build
-  - tests
+  - test
+#  - deploy
 
 before_script:
   - export GRADLE_USER_HOME='pwd'/.gradle
@@ -17,10 +18,11 @@ package:
   stage: build
   script:
     - chmod +x ./gradlew
-    - ./gradlew assemble
+    #    git update-index --chmod=+x also is solution
+    - ./gradlew --build-cache assemble
 
-test:
-  stage: tests
+tests:
+  stage: test
   script:
     - chmod +x ./gradlew
     - ./gradlew check

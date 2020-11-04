@@ -18,5 +18,5 @@ public interface TodoItemService {
 
     TodoItem updateItem(long id, TodoItem editedItem) throws EntityNotFoundException;
 
-    TodoItem changeDoneStatus(long id);
+    TodoItem changeItemStatus(long id) throws EntityNotFoundException;
 }

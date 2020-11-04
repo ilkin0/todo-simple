@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +21,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TodoItemServiceImplTests {
 
-    @Mock
+
     private TodoItemService itemService;
+
+    @Mock
     private TodoItemRepo itemRepo;
 
     private TodoItem passed;
@@ -31,6 +34,8 @@ public class TodoItemServiceImplTests {
 
     @BeforeEach
     public void init() {
+
+        MockitoAnnotations.initMocks(this);
 
         itemRepo = mock(TodoItemRepo.class);
         itemService = spy(new TodoItemServiceImpl(itemRepo));
@@ -117,7 +122,7 @@ public class TodoItemServiceImplTests {
 
     @Test
     @DisplayName("editItem(TodoItem todoItem)")
-    public void edit_item() throws EntityNotFoundException {
+    public void update_item() throws EntityNotFoundException {
 
         when(itemRepo.findById(1L)).thenReturn(Optional.of(expected));
         when(itemRepo.save(expected)).thenReturn(expected);
@@ -128,14 +133,24 @@ public class TodoItemServiceImplTests {
     }
 
     @Test
-    @DisplayName("checkIsDone")
-    public void change_done_status() {
+    @DisplayName("checkIsDone(itemId)")
+    public void change_done_status_when_id_exist() throws EntityNotFoundException {
 
         when(itemRepo.findById(1L)).thenReturn(Optional.of(expected));
 
-        TodoItem todoItem = itemService.changeDoneStatus(1L);
+        TodoItem todoItem = itemService.changeItemStatus(1L);
 
         assertEquals(expected, todoItem);
+    }
+
+    @Test
+    @DisplayName("checkIsDone(Long.MAX_VALUE)")
+    public void change_done_status_when_id_not_exist() throws EntityNotFoundException {
+
+        when(itemRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class,
+                () -> itemService.changeItemStatus(Long.MAX_VALUE));
     }
 
 }
