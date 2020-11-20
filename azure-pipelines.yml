@@ -1,0 +1,84 @@
+trigger:
+  - master
+
+pool:
+  vmImage: "ubuntu-16.04"
+
+variables:
+  - group: dev
+  - name: DOCKER_REPOSIToRY
+    value: $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com/$(DOCKER_REPOSITORY_NAME)
+
+stages:
+  - stage: BUILD
+    displayName: BUILD
+    jobs:
+      - job: BUILD_JOB
+        steps:
+          - task: DockerInstaller@0
+            displayName: "Install Docker 17.09.0-ce"
+            enabled: true
+
+          - task: Bash@3
+            displayName: "RUN DB"
+            inputs:
+              filePath: ./scripts/run-app.sh
+            enabled: true
+
+          - task: Gradle@2
+            displayName: "BUILD APP"
+            inputs:
+              gradleWrapperFile: 'gradlew'
+              jdkVersionOption: 1.11
+            enabled: true
+
+          - task: Copy@2
+            displayName: "Copy Files to: $(build.artifactstagingdirectory)"
+            inputs:
+              SourceFolder: "$(system.defaultworkingdirectory)"
+              Contents: "**/*.war"
+              TargetFolder: "$(build.artifactstagingdirectory)"
+            enabled: true
+            condition: succeededOrFailed()
+
+          - task: PublishBuildArtifacts@1
+            displayName: "Publish Artifact: drop"
+            inputs:
+              PathtoPublish: "$(build.artifactstagingdirectory)"
+            enabled: true
+            condition: succeededOrFailed()
+
+
+      - job: BUILD_DOCKER
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+        steps:
+          - task: DownloadPipelineArtifact@2
+              buildType: 'current'
+              artifactName: 'drop'
+              downloadPath: '$(system.defaultworkingdirectory)'
+
+
+          - task: Bash@3
+            scripts: |
+            aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com
+            displayName: "LOG IN TO AWS"
+            env:
+              AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+              AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+
+
+          - task: Docker@2
+            displayName: "BUILD IMAGE"
+            inputs:
+              containerRegistry: AWS
+              command: build
+              arguments: "-t 009701377962.dkr.ecr.us-east-2.amazonaws.com/todoapp_docker_repo:$(Build.BuildId) --build-arg url=$(db_url) --build-arg user=$(db_user)  --build-arg pass=$(db_pass) --build-arg port=$(tomcat_port)"
+                enabled: true
+
+          - task: Docker@2
+            displayName: "PUSH IMAGE TO AWS"
+            inputs:
+              containerRegistry: AWS
+              repository: $(DOCKER_REPOSITORY)
+              command: push
+            enabled: true
