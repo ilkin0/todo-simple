@@ -6,7 +6,7 @@ pool:
 
 variables:
   - group: AWS-RESCOURCES
-  - name: DOCKER_REPOSIToRY
+  - name: DOCKER_REPOSITORY
     value: $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com/$(DOCKER_REPOSITORY_NAME)
 
 stages:
@@ -62,15 +62,15 @@ stages:
           - task: Docker@2
             displayName: "BUILD IMAGE"
             inputs:
-              containerRegistry: AWS
+              containerRegistry: $(dockerRegistryServiceConnection)
               command: build
               arguments: "-t 009701377962.dkr.ecr.us-east-2.amazonaws.com/todoapp_docker_repo:$(Build.BuildId) --build-arg url=$(db_url) --build-arg user=$(db_user)  --build-arg pass=$(db_pass) --build-arg port=$(tomcat_port)"
-                enabled: true
+          enabled: true
 
           - task: Docker@2
             displayName: "PUSH IMAGE TO AWS"
             inputs:
-              containerRegistry: AWS
+              containerRegistry: $(dockerRegistryServiceConnection)
               repository: $(DOCKER_REPOSITORY)
               command: push
             enabled: true
