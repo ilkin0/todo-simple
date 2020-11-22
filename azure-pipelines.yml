@@ -62,7 +62,7 @@ stages:
             inputs:
               containerRegistry: $(dockerRegistryServiceConnection)
               command: build
-              arguments: "-t 009701377962.dkr.ecr.us-east-2.amazonaws.com/todoapp_docker_repo:$(Build.BuildId) --build-arg url=$(db_url) --build-arg user=$(db_user)  --build-arg pass=$(db_pass) --build-arg port=$(tomcat_port)"
+              arguments: "-t $(DOCKER_REPOSITORY):$(Build.BuildId) --build-arg url=$(db_url) --build-arg user=$(db_user)  --build-arg pass=$(db_pass) --build-arg port=$(tomcat_port)"
             enabled: true
 
           - task: Docker@2
