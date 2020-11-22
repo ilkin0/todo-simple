@@ -13,7 +13,6 @@ stages:
   - stage: BUILD
     displayName: BUILD
     jobs:
-
       - job: BUILD_JOB
         steps:
           - task: DockerInstaller@0
@@ -49,7 +48,6 @@ stages:
             enabled: true
             condition: succeededOrFailed()
 
-
       - job: BUILD_DOCKER
         condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
         steps:
@@ -65,12 +63,12 @@ stages:
               containerRegistry: $(dockerRegistryServiceConnection)
               command: build
               arguments: "-t 009701377962.dkr.ecr.us-east-2.amazonaws.com/todoapp_docker_repo:$(Build.BuildId) --build-arg url=$(db_url) --build-arg user=$(db_user)  --build-arg pass=$(db_pass) --build-arg port=$(tomcat_port)"
-          enabled: true
+            enabled: true
 
           - task: Docker@2
             displayName: "PUSH IMAGE TO AWS"
             inputs:
               containerRegistry: $(dockerRegistryServiceConnection)
-              repository: $(DOCKER_REPOSITORY)
+              repository: "easy-book-278822/easy-book"
               command: push
             enabled: true
