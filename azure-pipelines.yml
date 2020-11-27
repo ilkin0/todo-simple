@@ -57,11 +57,10 @@ stages:
               artifactName: 'drop'
               downloadPath: '$(system.defaultworkingdirectory)'
 
-          - task: Bash@3
+          steps:
             displayName: "Login To ECR"
-            inputs:
-              script:  "aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(DOCKER_REPOSITORY)"
-            enabled: true
+          - script:  "aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(DOCKER_REPOSITORY)"
+          enabled: true
 
           - task: Docker@2
             displayName: "BUILD IMAGE"
