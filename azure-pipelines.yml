@@ -66,18 +66,11 @@ stages:
             enabled: true
 
           - task: ECRPushImage@1
+            displayName: "PUSH IMAGE TO AWS"
             inputs:
               awsCredentials: 'AWS-IAM'
               regionName: 'us-east-2'
               imageSource: 'imageid'
               sourceImageId: '$(Build.BuildId)'
               repositoryName: '$(DOCKER_REPOSITORY_NAME)'
-            enabled: true
-
-          - task: Docker@2
-            displayName: "PUSH IMAGE TO AWS"
-            inputs:
-              containerRegistry: AWS
-              repository: $(DOCKER_REPOSITORY_NAME)
-              command: push
             enabled: true
