@@ -65,6 +65,15 @@ stages:
               arguments: "-t $(DOCKER_REPOSITORY):$(Build.BuildId) --build-arg url=$(db_url) --build-arg user=$(db_user)  --build-arg pass=$(db_pass) --build-arg port=$(tomcat_port)"
             enabled: true
 
+          - task: ECRPushImage@1
+            inputs:
+              awsCredentials: 'AWS-IAM'
+              regionName: 'us-east-2'
+              imageSource: 'imageid'
+              sourceImageId: '$(Build.BuildId)'
+              repositoryName: '$(DOCKER_REPOSITORY_NAME)'
+            enabled: true
+
           - task: Docker@2
             displayName: "PUSH IMAGE TO AWS"
             inputs:
