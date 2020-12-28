@@ -25,9 +25,11 @@ stages:
               filePath: ./scripts/run-app.sh
             enabled: true
 
+          - script: chmod +x gradlew
+            displayName: "GIVE WRITE ACCSESS TO GRADLE"
+
           - task: Gradle@2
             displayName: "BUILD APP"
-          - script: chmod +x gradlew
             inputs:
               gradleWrapperFile: 'gradlew'
               jdkVersionOption: 1.11
