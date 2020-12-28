@@ -14,6 +14,7 @@ COPY . /app/source
 WORKDIR /app/source
 RUN apt-get update -y && apt-get upgrade -y && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+
 FROM tomcat:8.5.55-jdk11-openjdk-slim
 WORKDIR /app
 COPY --from=BUILDER_IMAGE /app/source/drop/build/libs/simple-*.war /usr/local/tomcat/webapps/ROOT.war
