@@ -25,9 +25,12 @@ stages:
               filePath: ./scripts/run-app.sh
             enabled: true
 
-#          - script: chmod +x ./gradlew
-          - script: git update-index --chmod=+x gradlew
+          #          - script: chmod +x ./gradlew
+          #          - script: git update-index --chmod=+x gradlew
+          - task: CmdLine@2
             displayName: "GIVE WRITE ACCESS TO GRADLE"
+            inputs:
+              script: 'chmod +x ./gradlew'
 
           - task: Gradle@2
             displayName: "BUILD APP"
@@ -69,15 +72,15 @@ stages:
               arguments: "-t $(DOCKER_REPOSITORY):$(Build.BuildId) --build-arg url=$(db_url) --build-arg user=$(db_user)  --build-arg pass=$(db_pass) --build-arg port=$(tomcat_port)"
             enabled: true
 
-#          - task: ECRPushImage@1
-#            displayName: "PUSH IMAGE TO AWS"
-#            inputs:
-#              awsCredentials: 'AWS-IAM'
-#              regionName: '$(AWS_REGION)'
-#              imageSource: 'imageid'
-#              sourceImageId: '$(Build.BuildId)'
-#              repositoryName: '$(DOCKER_REPOSITORY_NAME)'
-#            enabled: true
+          #          - task: ECRPushImage@1
+          #            displayName: "PUSH IMAGE TO AWS"
+          #            inputs:
+          #              awsCredentials: 'AWS-IAM'
+          #              regionName: '$(AWS_REGION)'
+          #              imageSource: 'imageid'
+          #              sourceImageId: '$(Build.BuildId)'
+          #              repositoryName: '$(DOCKER_REPOSITORY_NAME)'
+          #            enabled: true
           - task: ECRPushImage@1
             displayName: "PUSH IMAGE TO AWS"
             inputs:
