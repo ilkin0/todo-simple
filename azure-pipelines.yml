@@ -29,7 +29,7 @@ stages:
 #            displayName: "GIVE WRITE ACCSESS TO GRADLE"
 
           - task: Gradle@2
-            script: chmod +x ./gradlew
+            - script: chmod +x ./gradlew
             displayName: "BUILD APP"
             inputs:
               gradleWrapperFile: 'gradlew'
