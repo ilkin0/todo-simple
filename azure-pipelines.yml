@@ -26,10 +26,10 @@ stages:
             enabled: true
 
 #          - script: chmod +x ./gradlew
-#            displayName: "GIVE WRITE ACCSESS TO GRADLE"
+          - script: git update-index --chmod=+x gradlew
+            displayName: "GIVE WRITE ACCESS TO GRADLE"
 
           - task: Gradle@2
-            script: chmod +x ./gradlew
             displayName: "BUILD APP"
             inputs:
               gradleWrapperFile: 'gradlew'
