@@ -24,17 +24,17 @@ if [[ $fromvm == 'no' ]]; then
   docker pull postgres:12.3-alpine
   echo "Run postgres..."
   docker container run -d --name db --publish 5433:5432 -e POSTGRES_PASSWORD=admin postgres:12.3-alpine
-#
-#  echo "Create db"
-#  sleep 5
-#  docker exec db bash -c "
-#psql -U postgres -c '
-#CREATE DATABASE booking
-#    WITH
-#    OWNER = postgres
-#    ENCODING = "UTF8"
-#    CONNECTION LIMIT = -1;
-#    '"
+
+  echo "Create db"
+  sleep 5
+  docker exec db bash -c "
+psql -U postgres -c '
+CREATE DATABASE tododb
+    WITH
+    OWNER = postgres
+    ENCODING = "UTF8"
+    CONNECTION LIMIT = -1;
+    '"
 fi
 if [[ $fromvm == 'yes' ]]; then
   echo "create network"
