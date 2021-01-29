@@ -26,9 +26,9 @@ stages:
             enabled: true
 
           - task: Bash@3
-            displayName: "CHECK DB"
-            inputs:
-              targetType: inline
+              displayName: Helm Uninstall $(release-name)
+              inputs:
+                targetType: inline
                 script: >
                   docker ps
 
