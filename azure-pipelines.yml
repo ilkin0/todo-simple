@@ -83,20 +83,20 @@ stages:
             enabled: true
 
   - stage: DEV
-      displayName: "RELEASE-DEV"
-      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['Build.Reason'], 'PullRequest'))
-      jobs:
-        - job: DEV_DEPLOY_JOB
-          steps:
-            - task: CopyFilesOverSSH@0
-              displayName: "COPY run-app.sh"
-              inputs:
-                sshEndpoint: "ssh-connection"
-                contents: scripts/run-app.sh
+    displayName: RELEASE-DEV
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['Build.Reason'], 'PullRequest'))
+    jobs:
+       - job: DEV_DEPLOY_JOB
+        steps:
+          - task: CopyFilesOverSSH@0
+            displayName: "COPY run-app.sh"
+            inputs:
+              sshEndpoint: "ssh-connection"
+              contents: scripts/run-app.sh
 
-            - task: SSH@0
-              displayName: "RUN APP"
-              inputs:
-                sshEndpoint: "ssh-connection"
-                commands: |
-                  bash scripts/run-app.sh --number $(Build.BuildId) --fromvm 'yes'
+          - task: SSH@0
+            displayName: "RUN APP"
+            inputs:
+              sshEndpoint: "ssh-connection"
+              commands: |
+                bash scripts/run-app.sh --number $(Build.BuildId) --fromvm 'yes'
