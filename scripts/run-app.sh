@@ -23,7 +23,7 @@ if [[ $fromvm == 'no' ]]; then
   echo "Pull postgres image"
   docker pull postgres:12.3-alpine
   echo "Run postgres..."
-  docker container run -d --name db --publish 5432:5432 -e POSTGRES_PASSWORD=admin postgres:12.3-alpine
+  docker container run -d --name db --publish 5432:5432 -e POSTGRES_PASSWORD=postgres postgres:12.3-alpine
 
   echo "Create db"
   sleep 5
