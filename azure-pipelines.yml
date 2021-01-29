@@ -25,6 +25,13 @@ stages:
               filePath: ./scripts/run-app.sh
             enabled: true
 
+          - task: Bash@3
+            displayName: "CHECK DB"
+            inputs:
+              targetType: inline
+                script: >
+                  docker ps
+
           - task: CmdLine@2
             displayName: "GIVE WRITE ACCESS TO GRADLE"
             inputs:
