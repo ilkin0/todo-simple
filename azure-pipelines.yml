@@ -25,12 +25,11 @@ stages:
               filePath: ./scripts/run-app.sh
             enabled: true
 
-          #          - script: chmod +x ./gradlew
-          #          - script: git update-index --chmod=+x gradlew
           - task: CmdLine@2
             displayName: "GIVE WRITE ACCESS TO GRADLE"
             inputs:
               script: 'chmod +x ./gradlew'
+          #              script: git update-index --chmod=+x gradlew
 
           - task: Gradle@2
             displayName: "BUILD APP"
@@ -72,15 +71,6 @@ stages:
               arguments: "-t $(DOCKER_REPOSITORY):$(Build.BuildId) --build-arg url=$(db_url) --build-arg user=$(db_user)  --build-arg pass=$(db_pass) --build-arg port=$(tomcat_port)"
             enabled: true
 
-          #          - task: ECRPushImage@1
-          #            displayName: "PUSH IMAGE TO AWS"
-          #            inputs:
-          #              awsCredentials: 'AWS-IAM'
-          #              regionName: '$(AWS_REGION)'
-          #              imageSource: 'imageid'
-          #              sourceImageId: '$(Build.BuildId)'
-          #              repositoryName: '$(DOCKER_REPOSITORY_NAME)'
-          #            enabled: true
           - task: ECRPushImage@1
             displayName: "PUSH IMAGE TO AWS"
             inputs:
@@ -91,3 +81,22 @@ stages:
               sourceImageTag: '$(Build.BuildId)'
               repositoryName: '$(DOCKER_REPOSITORY_NAME)'
             enabled: true
+
+  - stage: DEV
+      displayName: RELEASE-DEV
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['Build.Reason'], 'PullRequest'))
+      jobs:
+        - job: DEV_DEPLOY_JOB
+          steps:
+            - task: CopyFilesOverSSH@0
+              displayName: "COPY run-app.sh"
+              inputs:
+                sshEndpoint: "ssh-connection"
+                contents: scripts/run-app.sh
+
+            - task: SSH@0
+              displayName: "RUN APP"
+              inputs:
+                sshEndpoint: "ssh-connection"
+                commands: |
+                  bash scripts/run-app.sh --number $(Build.BuildId) --fromvm 'yes'
