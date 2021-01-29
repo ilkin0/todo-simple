@@ -86,7 +86,7 @@ stages:
     displayName: RELEASE-DEV
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['Build.Reason'], 'PullRequest'))
     jobs:
-       - job: DEV_DEPLOY_JOB
+      - job: DEV_DEPLOY_JOB
         steps:
           - task: CopyFilesOverSSH@0
             displayName: "COPY run-app.sh"
