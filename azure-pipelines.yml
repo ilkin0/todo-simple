@@ -26,11 +26,11 @@ stages:
             enabled: true
 
           - task: Bash@3
-              displayName: Helm Uninstall $(release-name)
-              inputs:
-                targetType: inline
-                script: >
-                  docker ps
+            displayName: Helm Uninstall $(release-name)
+            inputs:
+              targetType: inline
+              script: >
+                docker ps
 
           - task: CmdLine@2
             displayName: "GIVE WRITE ACCESS TO GRADLE"
